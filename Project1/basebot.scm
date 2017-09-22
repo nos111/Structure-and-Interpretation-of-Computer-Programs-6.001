@@ -170,7 +170,7 @@
 ;;(total-time 45 90 1) ;;9.20584217798685 sec
 
 ;; at an angle of (/ pi 4) radians or 45 degrees
-(travel-distance-simple 1 45 44) ;;207.62785983753528 m
+;;(travel-distance-simple 1 45 44) ;;207.62785983753528 m
 ;;(total-time 45 45 1) ;;6.525114117972054 sec
 
 ;; what is the distance traveled in each case?
@@ -309,7 +309,7 @@
           (g gravity))
           (integrate x0 y0 u0 v0 t0 dt g mass beta))))
 
-(travel-distance 0 3 80) ;; 92.50801605244197 m
+;;(travel-distance 0 3 80) ;; 92.50801605244197 m
 ;;(travel-distance 1 40 45) ;; 82.78053770266135 m
           
 
@@ -399,7 +399,6 @@
     (if (> bounces 0)
         (calc-bounce (/ velocity 2) angle 0 (- bounces 1) (+ old-distance bounce-distance))
         old-distance))))
-
 ;;(travel-distance-bounce 55 80 1 4) ;; 61.733650076285336 meter
 ;;(travel-distance-bounce 45 45 1 1) ;; 130.61071759996312 meter
 ;;(travel-distance-bounce 45 45 1 2) ;; 142.54687837034763 meter
@@ -412,7 +411,7 @@
           (du (* -1 (* beta (* u0 (* dt (* (/ 1 m) (sqrt(+ (square u0) (square v0)))))))))
           (dv (* -1 (* dt (+ (* beta (* v0 (/ 1 m) (sqrt(+ (square u0) (square v0))))) g)))))
       (if (< y0 0)
-          (list x0 u0 v0)
+          (list x0 (+ u0 du) (+ v0 dv))
           (integrate-bounce (+ x0 dx) (+ y0 dy) (+ u0 du) (+ v0 dv) (+ t0 dt) dt g m beta)
           ))))
 
@@ -427,23 +426,29 @@
           (g gravity))
           (integrate-bounce x0 y0 u0 v0 t0 dt g mass beta))))
 
+(define calc-velocity
+  (lambda (u0 v0)
+    (sqrt(+ (square u0) (square v0)))))
+
+(define get-bounces
+  (lambda (info-list angle bounces old-distance)
+    (let ((distance (+ old-distance (car info-list)))
+          (velocity (calc-velocity (car (cdr info-list)) (car (cdr (cdr info-list))))))
+      (if (< bounces 1)
+          distance
+          (get-bounces (travel-distance-bounce2 0 velocity angle) angle (- bounces 1) distance)))))
+          
+          
+             
+    
+
 (define calc-bounce2
-  (lambda (velocity angle elevation bounces old-distance info-list)
-    (let (
-          (bounce-distance (car info-list))
-          (u0 (car (cdr info-list)))
-          (v0 (cdr (cdr info-list)))
-          (new-velocity (sqrt(+ (square u0) (square v0))))
-          )
-    (if (> bounces 0)
-        (calc-bounce2 new-veloctiy angle 0 (- bounces 1) (+ old-distance bounce-distance))
-        old-distance))))
+ (lambda (elevation velocity angle bounces)
+   (let ((info-list (travel-distance-bounce2 elevation velocity angle)))
+     (get-bounces info-list angle bounces 0))))
+         
 
-(define get-me-my-bounces
-  (lambda (velocity angle elevation bounces old-distance)
-    (let ((info-list (travel-distance-bounce2 elevation velocity angle)))
-      (calc-bounce2 velocity angle elevation bounces old-distance info-list))))
-           
 
-(calc-bounce2 45 45 1 4 0)
-;;(define x(list `1 `2 `3 `4))
+;; comparing with the previous problem we see that the output makes sense
+;;(calc-bounce2 1 45 45 1) ;;133.90337383615076 meter
+;;(calc-bounce2 1 45 45 2) ;;160.4762106488039 meter
