@@ -386,34 +386,40 @@
            ((and (string=? (list-ref history2 others-length) "d") (string=? (list-ref history1 others-length) "d"))
             (cond 
                    ((string=? (list-ref history0 player0-length) "c")
-                      (make-history-summary-iter (all-but-last history0) (all-but-last history1) (all-but-last history2) list1 list2 (list (+ 1 (car list3)) (cadr list3) (+ 1 (caddr list3)))))
+                      (make-history-summary-iter (all-but-last history0) (all-but-last history1) (all-but-last history2)
+                                                 list1 list2 (list (+ 1 (car list3)) (cadr list3) (+ 1 (caddr list3)))))
                    ((string=? (list-ref history0 player0-length) "d")
-                      (make-history-summary-iter (all-but-last history0) (all-but-last history1) (all-but-last history2) list1 list2  (list (car list3) (+ 1 (cadr list3)) (+ 1 (caddr list3)))))))
+                      (make-history-summary-iter (all-but-last history0) (all-but-last history1) (all-but-last history2)
+                                                 list1 list2  (list (car list3) (+ 1 (cadr list3)) (+ 1 (caddr list3)))))))
+           
            ((or (and (string=? (list-ref history2 others-length) "c") (string=? (list-ref history1 others-length) "d"))
                (and (string=? (list-ref history2 others-length) "d") (string=? (list-ref history1 others-length) "c")))
             (cond 
                   ((string=? (list-ref history0 player0-length) "c")
-                     (make-history-summary-iter (all-but-last history0) (all-but-last history1) (all-but-last history2) list1 (list (+ 1 (car list2)) (cadr list2) (+ 1 (caddr list2))) list3))
+                     (make-history-summary-iter (all-but-last history0) (all-but-last history1) (all-but-last history2)
+                                                list1 (list (+ 1 (car list2)) (cadr list2) (+ 1 (caddr list2))) list3))
                   ((string=? (list-ref history0 player0-length) "d")
-                     (make-history-summary-iter (all-but-last history0) (all-but-last history1) (all-but-last history2) list1 (list (car list2) (+ 1 (cadr list2)) (+ 1 (caddr list2))) list3))))
+                     (make-history-summary-iter (all-but-last history0) (all-but-last history1) (all-but-last history2)
+                                                list1 (list (car list2) (+ 1 (cadr list2)) (+ 1 (caddr list2))) list3))))
            
            ((and (string=? (list-ref history2 others-length) "c") (string=? (list-ref history1 others-length) "c"))
             (cond 
                    ((string=? (list-ref history0 player0-length) "c")
-                      (make-history-summary-iter (all-but-last history0) (all-but-last history1) (all-but-last history2) (list (+ 1 (car list1)) (cadr list1) (+ 1 (caddr list1))) list2 list3))
+                      (make-history-summary-iter (all-but-last history0) (all-but-last history1) (all-but-last history2)
+                                                 (list (+ 1 (car list1)) (cadr list1) (+ 1 (caddr list1))) list2 list3))
            ((string=? (list-ref history0 player0-length) "d")
-              (make-history-summary-iter (all-but-last history0) (all-but-last history1) (all-but-last history2) (list (car list1) (+ 1 (cadr list1)) (+ 1 (caddr list1))) list2 list3)))))))
+              (make-history-summary-iter (all-but-last history0) (all-but-last history1) (all-but-last history2)
+                                         (list (car list1) (+ 1 (cadr list1)) (+ 1 (caddr list1))) list2 list3)))))))
 
 (define (make-history-summary history1 history2 history3)
   (make-history-summary-iter history1 history2 history3 `(0 0 0) `(0 0 0) `(0 0 0)))
         
 
-(define hist1 (list "c" "c" "d" "d" "c" "d" "c" "c"))
-(define hist2 (list "c" "c" "c" "d" "d" "c" "d" "c"))
-(define hist3 (list "c" "c" "d" "d" "d" "c" "c" "c"))
-(make-history-summary hist1 hist2 hist3) ;; (list (list 3 0 3) (list 1 1 2) (list 0 2 2)) works as intended
+;;(define hist1 (list "c" "c" "d" "d" "c" "d" "c" "c"))
+;;(define hist2 (list "c" "c" "c" "d" "d" "c" "d" "c"))
+;;(define hist3 (list "c" "c" "d" "d" "d" "c" "c" "c"))
+;;(make-history-summary hist1 hist2 hist3) ;; (list (list 3 0 3) (list 1 1 2) (list 0 2 2)) works as intended
 
-(list-set '(zero one two) 2 "two")
 
 
 ;; in expected-values: #f = don't care 
